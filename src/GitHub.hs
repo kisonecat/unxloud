@@ -223,4 +223,7 @@ getDirectoryOrFile :: (MonadDB m, MonadReader r m, HasConfiguration r, MonadIO m
 getDirectoryOrFile username reponame sha xs = runExceptT $ do
   c <- ExceptT $ getCommit username reponame sha
   t <- ExceptT $ getTree $ commitTreeUrl c
-  ExceptT $ getDirectoryOrFileFromTree t xs
+  mres <- ExceptT $ getDirectoryOrFileFromTree t xs
+  case mres of
+    Nothing   -> throwError "DirectoryOrFile not found"
+    Just res  -> return res
