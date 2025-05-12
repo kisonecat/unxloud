@@ -27,6 +27,7 @@ import Data.Aeson
 import Data.Aeson.Types (Parser)
 import qualified Data.ByteString as BS
 import Data.ByteString.Char8 (pack)
+import qualified Data.ByteString.Lazy as LBS
 import Data.List (break, intercalate)
 import Network.URI (uriToString)
 import Data.Maybe
