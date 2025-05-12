@@ -164,5 +164,5 @@ cssHandler providedSHA = do
     else throwError err404 { errBody = "File not found" }
 
 -- New endpoint: Serve any file from /dist if no other route matches.
-staticFileHandler :: Tagged Handler Application
+staticFileHandler :: Tagged AppM Application
 staticFileHandler = Tagged (serveDirectoryFileServer "dist")
