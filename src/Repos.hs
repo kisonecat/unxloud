@@ -87,7 +87,7 @@ ximeraPageHandler owner reponame pathSegments = do
            in return $ H.docTypeHtml $ do
                 H.head $ do
                   H.title "Ximera Page"
-                  H.script ! A.src (H.toValue ("/assets/" ++ unSHA (jsBundleSHA config) ++ "/bundle.js"))
+                  H.script ! A.src (H.toValue ("/assets/" ++ unSHA (jsBundleSHA config) ++ "/bundle.js")) $ mempty
                 H.body $ H.preEscapedToMarkup bodyContent
 
 -- Extract the content between <body> and </body> tags.
