@@ -53,6 +53,7 @@ executable unxloud
                      , mtl
                      , servant
                      , servant-server
+                     , servant-blaze
                      , wai-logger
                      , network-uri
                      , dotenv
