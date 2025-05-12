@@ -67,6 +67,7 @@ ximeraPageHandler ::
 ximeraPageHandler owner reponame pathSegments = do
   let fullPath = intercalate "/" pathSegments
   result <- GH.getPage owner reponame fullPath
+  config <- asks getConfiguration
   case result of
     Left err -> throwError $ err500 { errBody = cs ("Internal error: " ++ err) }
     Right page ->
@@ -82,7 +83,9 @@ ximeraPageHandler owner reponame pathSegments = do
         GH.HTMLContent bs ->
           let bodyContent = extractBody (cs bs)
            in return $ H.docTypeHtml $ do
-                H.head $ H.title "Ximera Page"
+                H.head $ do
+                  H.title "Ximera Page"
+                  H.script ! A.src (H.toValue ("/assets/" ++ unSHA (jsBundleSHA config) ++ "/bundle.js"))
                 H.body $ H.preEscapedToMarkup bodyContent
 
 -- Extract the content between <body> and </body> tags.
