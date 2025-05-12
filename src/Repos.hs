@@ -55,7 +55,7 @@ instance MimeRender JavaScript BS.ByteString where
   mimeRender _ bs = LBS.fromStrict bs
 
 type API = (Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html)
-       :<|> ("assets" :> Capture "sha" String :> "bundle.js" :> Get '[JavaScript] BS.ByteString)
+       :<|> (Capture "sha" SHA :> "bundle.js" :> Get '[JavaScript] BS.ByteString)
 
 server ::
   ( MonadIO m,
@@ -96,7 +96,7 @@ ximeraPageHandler owner reponame pathSegments = do
            in return $ H.docTypeHtml $ do
                 H.head $ do
                   H.title "Ximera Page"
-                  H.script ! A.src (H.toValue ("/assets/" ++ unSHA (jsBundleSHA config) ++ "/bundle.js")) $ mempty
+                  H.script ! A.src (H.toValue (unSHA (jsBundleSHA config) ++ "/bundle.js")) $ mempty
                 H.body $ H.preEscapedToMarkup bodyContent
 
 -- Extract the content between <body> and </body> tags.
@@ -127,9 +127,9 @@ shaBundleHandler ::
     HasConfiguration r,
     MonadError ServerError m
   ) =>
-  String -> m BS.ByteString
+  SHA -> m BS.ByteString
 shaBundleHandler providedSHA = do
   config <- asks getConfiguration
-  if providedSHA == unSHA (jsBundleSHA config)
+  if providedSHA == jsBundleSHA config
     then liftIO $ BS.readFile "static/js/bundle.js"
     else throwError err404 { errBody = "File not found" }
