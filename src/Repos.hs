@@ -45,6 +45,9 @@ import qualified Text.Blaze.Html5.Attributes as A
 
 import GitHub as GH
 
+instance FromHttpApiData SHA where
+  parseUrlPiece = Right . SHA . cs
+
 -- New content type for serving JavaScript files.
 data JavaScript
 
