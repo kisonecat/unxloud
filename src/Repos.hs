@@ -45,8 +45,17 @@ import qualified Text.Blaze.Html5.Attributes as A
 
 import GitHub as GH
 
+-- New content type for serving JavaScript files.
+data JavaScript
+
+instance Accept JavaScript where
+  contentType _ = "application/javascript"
+
+instance MimeRender JavaScript BS.ByteString where
+  mimeRender _ bs = bs
+
 type API = (Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html)
-       :<|> ("assets" :> Capture "sha" String :> "bundle.js" :> Get '[PlainText] LBS.ByteString)
+       :<|> ("assets" :> Capture "sha" String :> "bundle.js" :> Get '[JavaScript] BS.ByteString)
 
 server ::
   ( MonadIO m,
@@ -118,9 +127,9 @@ shaBundleHandler ::
     HasConfiguration r,
     MonadError ServerError m
   ) =>
-  String -> m LBS.ByteString
+  String -> m BS.ByteString
 shaBundleHandler providedSHA = do
   config <- asks getConfiguration
   if providedSHA == unSHA (jsBundleSHA config)
-    then liftIO $ LBS.readFile "static/js/bundle.js"
+    then liftIO $ BS.readFile "static/js/bundle.js"
     else throwError err404 { errBody = "File not found" }
