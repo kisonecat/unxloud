@@ -64,6 +64,7 @@ executable unxloud
                      , wai
                      , warp
                      , blaze-html
+                     , SHA
 
   -- Directories containing source files.
   hs-source-dirs:      src
