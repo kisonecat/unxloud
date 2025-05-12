@@ -62,6 +62,15 @@ import qualified Repos
 import Servant
 import Servant.Server
 import System.Environment (lookupEnv)
+import qualified Data.ByteString.Lazy as LBS
+import Data.Digest.Pure.SHA (sha1)
+import Configuration (SHA(..))
+
+computeSHA :: FilePath -> IO SHA
+computeSHA path = do
+  content <- LBS.readFile path
+  let hash = sha1 content
+  return (SHA (show hash))
 
 type TheAPI = Repos.API
 
@@ -101,7 +110,10 @@ theApplicationWithSettings settings = do
 
   root <- lookupEnv "GITHUB_ROOT"
   accessToken <- lookupEnv "GITHUB_ACCESS_TOKEN"
-  let config = updateGithubRoot root $ updateGithubAccessToken accessToken $ updateHostname hostname $ defaultConfiguration
+  jsHash <- computeSHA "static/js/bundle.js"
+  cssHash <- computeSHA "static/css/main.css"
+  let config = (updateGithubRoot root $ updateGithubAccessToken accessToken $ updateHostname hostname $ defaultConfiguration)
+               { jsBundleSHA = jsHash, cssMainSHA = cssHash }
 
   putStrLn $ "Listening on port " ++ show (getPort settings)
 
