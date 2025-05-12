@@ -14,7 +14,7 @@ module Repos
   )
 where
 
--- import Data.String.Conversions (cs)
+import Data.String.Conversions (cs)
 
 import AppM (AppM, HasConfiguration (..), MonadDB (..), getConfiguration, getPool)
 import Configuration
@@ -61,11 +61,6 @@ server ::
   ) =>
   ServerT API m
 server = getBooks :<|> ximeraPageHandler
-import Data.List (intercalate)
-import qualified Data.ByteString.Char8 as C8
-import Network.URI (uriToString)
-import Servant (err302, err500, err404)
-import Data.String.Conversions (cs)
 
 -- Handler for the new endpoint:
 ximeraPageHandler ::
