@@ -43,8 +43,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 
 import GitHub as GH
 
-type API = "books" :> Get '[HTML] Html
-      :<|> Capture "owner" String :> Capture "reponame" String :> "the" :> CaptureAll "fullpath" String :> Get '[HTML] Html
+type API = Capture "owner" String :> Capture "reponame" String :> "the" :> CaptureAll "fullpath" String :> Get '[HTML] Html
 
 getBooks :: (MonadError ServerError m, MonadIO m, MonadDB m, MonadReader r m, HasConfiguration r) => m Html
 getBooks = return $ H.docTypeHtml $ do
@@ -61,7 +60,7 @@ server ::
     MonadError ServerError m
   ) =>
   ServerT API m
-server = getBooks :<|> ximeraPageHandler
+server = ximeraPageHandler
 
 -- Handler for the new endpoint:
 ximeraPageHandler ::
