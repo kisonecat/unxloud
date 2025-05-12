@@ -146,3 +146,17 @@ shaBundleHandler providedSHA = do
   if providedSHA == jsBundleSHA config
     then liftIO $ BS.readFile "static/js/bundle.js"
     else throwError err404 { errBody = "File not found" }
+
+    -- New endpoint: Serve main.css if provided SHA matches the configuration.
+    cssHandler ::
+      ( MonadIO m,
+        MonadReader r m,
+        HasConfiguration r,
+        MonadError ServerError m
+      ) =>
+      SHA -> m BS.ByteString
+    cssHandler providedSHA = do
+      config <- asks getConfiguration
+      if providedSHA == cssMainSHA config
+        then liftIO $ BS.readFile "static/css/main.css"
+        else throwError err404 { errBody = "File not found" }
