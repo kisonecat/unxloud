@@ -27,7 +27,7 @@ import Data.Aeson
 import Data.Aeson.Types (Parser)
 import qualified Data.ByteString as BS
 import Data.ByteString.Char8 (pack)
-import Data.List (break)
+import Data.List (break, intercalate)
 import Data.Maybe
 import Data.Pool (withResource)
 import Data.Text (Text)
@@ -73,20 +73,20 @@ ximeraPageHandler ::
   String -> String -> [String] -> m Html
 ximeraPageHandler owner reponame pathSegments = do
   let fullPath = intercalate "/" pathSegments
-  result <- GitHub.getPage owner reponame fullPath
+  result <- GH.getPage owner reponame fullPath
   case result of
     Left err -> throwError $ err500 { errBody = cs ("Internal error: " ++ err) }
     Right page ->
       case page of
-        PageMissing ->
+        GH.PageMissing ->
           return $ H.docTypeHtml $ do
                       H.head $ H.title "404 Not Found"
                       H.body $ do
                         H.h1 "404 Not Found"
                         H.p "The requested page was not found."
-        RedirectTo uri ->
+        GH.RedirectTo uri ->
           throwError $ err302 { errHeaders = [("Location", cs (uriToString id uri ""))] }
-        HTMLContent bs ->
+        GH.HTMLContent bs ->
           let bodyContent = extractBody (cs bs)
            in return $ H.docTypeHtml $ do
                 H.head $ H.title "Ximera Page"

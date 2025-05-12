@@ -14,7 +14,8 @@ module GitHub
   ( getRepo,
     getRepoMain,
     getTree,
-    getPage
+    getPage,
+    XimeraPage(..)
   )
 where
 
