@@ -109,6 +109,7 @@ ximeraPageHandler owner reponame pathSegments = do
            in return $ H.docTypeHtml $ do
                 H.head $ do
                   H.title "Ximera Page"
+                  H.link ! A.rel "stylesheet" ! A.href (H.toValue (unSHA (cssMainSHA config) ++ "/main.css"))
                   H.script ! A.src (H.toValue (unSHA (jsBundleSHA config) ++ "/bundle.js")) $ mempty
                 H.body $ H.preEscapedToMarkup bodyContent
 
