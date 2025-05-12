@@ -57,8 +57,8 @@ instance Accept JavaScript where
 instance MimeRender JavaScript BS.ByteString where
   mimeRender _ bs = LBS.fromStrict bs
 
-type API = (Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html)
-       :<|> (Capture "sha" SHA :> "bundle.js" :> Get '[JavaScript] BS.ByteString)
+type API = (Capture "sha" SHA :> "bundle.js" :> Get '[JavaScript] BS.ByteString)
+       :<|> (Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html)
 
 server ::
   ( MonadIO m,
@@ -68,7 +68,7 @@ server ::
     MonadError ServerError m
   ) =>
   ServerT API m
-server = ximeraPageHandler :<|> shaBundleHandler
+server = shaBundleHandler :<|> ximeraPageHandler
 
 ximeraPageHandler ::
   ( MonadIO m,
