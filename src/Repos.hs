@@ -43,7 +43,8 @@ import qualified Text.Blaze.Html5.Attributes as A
 
 import GitHub as GH
 
-type API = Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html
+type API = (Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html)
+       :<|> ("assets" :> Capture "sha" String :> "bundle.js" :> Get '[PlainText] LBS.ByteString)
 
 server ::
   ( MonadIO m,
@@ -53,7 +54,7 @@ server ::
     MonadError ServerError m
   ) =>
   ServerT API m
-server = ximeraPageHandler
+server = ximeraPageHandler :<|> shaBundleHandler
 
 ximeraPageHandler ::
   ( MonadIO m,
@@ -104,3 +105,17 @@ findSubstring pat str = search 0
     search i | i > strLen - patLen = Nothing
              | take patLen (drop i str) == pat = Just i
              | otherwise = search (i + 1)
+
+-- New endpoint: Serve bundle.js if provided SHA matches the configuration.
+shaBundleHandler ::
+  ( MonadIO m,
+    MonadReader r m,
+    HasConfiguration r,
+    MonadError ServerError m
+  ) =>
+  String -> m LBS.ByteString
+shaBundleHandler providedSHA = do
+  config <- asks getConfiguration
+  if providedSHA == unSHA (jsBundleSHA config)
+    then liftIO $ LBS.readFile "static/js/bundle.js"
+    else throwError err404 { errBody = "File not found" }
