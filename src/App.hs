@@ -17,7 +17,7 @@ where
 
 import AppM (AppCtx (..), AppM (..), HasConfiguration (..), MonadDB (..))
 import Configuration
-  ( Configuration (getHostname),
+  ( Configuration (getHostname, jsBundleSHA, cssMainSHA),
     defaultConfiguration,
     updateGithubAccessToken,
     updateGithubRoot,
