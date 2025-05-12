@@ -52,7 +52,7 @@ instance Accept JavaScript where
   contentType _ = "application/javascript"
 
 instance MimeRender JavaScript BS.ByteString where
-  mimeRender _ bs = bs
+  mimeRender _ bs = LBS.fromStrict bs
 
 type API = (Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html)
        :<|> ("assets" :> Capture "sha" String :> "bundle.js" :> Get '[JavaScript] BS.ByteString)
