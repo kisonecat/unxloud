@@ -69,6 +69,7 @@ instance MimeRender CSS BS.ByteString where
 type API = (Capture "sha" SHA :> "bundle.js" :> Get '[JavaScript] BS.ByteString)
        :<|> (Capture "sha" SHA :> "main.css" :> Get '[CSS] BS.ByteString)
        :<|> (Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html)
+       :<|> Raw
 
 server ::
   ( MonadIO m,
@@ -78,7 +79,7 @@ server ::
     MonadError ServerError m
   ) =>
   ServerT API m
-server = shaBundleHandler :<|> cssHandler :<|> ximeraPageHandler
+server = shaBundleHandler :<|> cssHandler :<|> ximeraPageHandler :<|> staticFileHandler
 
 ximeraPageHandler ::
   ( MonadIO m,
@@ -161,3 +162,7 @@ cssHandler providedSHA = do
   if providedSHA == cssMainSHA config
     then liftIO $ BS.readFile "static/css/main.css"
     else throwError err404 { errBody = "File not found" }
+
+-- New endpoint: Serve any file from /dist if no other route matches.
+staticFileHandler :: Application
+staticFileHandler = serveDirectoryFileServer "dist"
