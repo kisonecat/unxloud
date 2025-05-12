@@ -35,17 +35,20 @@ import qualified Data.Text as Text
 import qualified Database.Redis as R
 import Servant
 import Servant.Server
+import Text.Blaze.Html (Html)
+import qualified Text.Blaze.Html5 as H
+import qualified Text.Blaze.Html5.Attributes as A
 
 import GitHub as GH
 
-type API = "books" :> (Get '[JSON] Int)
+type API = "books" :> (Get '[HTML] Html)
 
-getBooks :: (MonadError ServerError m, MonadIO m, MonadDB m, MonadReader r m, HasConfiguration r) => m Int
-getBooks = do
-  --r <- GH.getRepoMain "ximeraproject" "xloud"
-  r <- GH.getPage "kisonecat" "samplePages" "seco2nd.html"
-  liftIO $ print r
-  return 17
+getBooks :: (MonadError ServerError m, MonadIO m, MonadDB m, MonadReader r m, HasConfiguration r) => m Html
+getBooks = return $ H.docTypeHtml $ do
+    H.head $ H.title "Books"
+    H.body $ do
+      H.h1 "Books"
+      H.p "This is a simple HTML page produced by a Blaze template."
 
 server ::
   ( MonadIO m,
