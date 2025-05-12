@@ -110,7 +110,7 @@ theApplicationWithSettings settings = do
 
   root <- lookupEnv "GITHUB_ROOT"
   accessToken <- lookupEnv "GITHUB_ACCESS_TOKEN"
-  jsHash <- computeSHA "static/js/bundle.js"
+  jsHash <- computeSHA "dist/bundle.js"
   cssHash <- computeSHA "static/css/main.css"
   let config = (updateGithubRoot root $ updateGithubAccessToken accessToken $ updateHostname hostname $ defaultConfiguration)
                { jsBundleSHA = jsHash, cssMainSHA = cssHash }

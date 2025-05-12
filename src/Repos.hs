@@ -109,8 +109,8 @@ ximeraPageHandler owner reponame pathSegments = do
            in return $ H.docTypeHtml $ do
                 H.head $ do
                   H.title "Ximera Page"
-                  H.link ! A.rel "stylesheet" ! A.href (H.toValue (unSHA (cssMainSHA config) ++ "/main.css"))
-                  H.script ! A.src (H.toValue (unSHA (jsBundleSHA config) ++ "/bundle.js")) $ mempty
+                  -- H.link ! A.rel "stylesheet" ! A.href (H.toValue (unSHA (cssMainSHA config) ++ "/main.css"))
+                  H.script ! A.src (H.toValue ("/" ++ unSHA (jsBundleSHA config) ++ "/bundle.js")) $ mempty
                 H.body $ H.preEscapedToMarkup bodyContent
 
 -- Extract the content between <body> and </body> tags.
@@ -145,7 +145,7 @@ shaBundleHandler ::
 shaBundleHandler providedSHA = do
   config <- asks getConfiguration
   if providedSHA == jsBundleSHA config
-    then liftIO $ BS.readFile "static/js/bundle.js"
+    then liftIO $ BS.readFile "dist/bundle.js"
     else throwError err404 { errBody = "File not found" }
 
 -- New endpoint: Serve main.css if provided SHA matches the configuration.
