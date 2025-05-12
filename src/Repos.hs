@@ -40,6 +40,7 @@ import Servant.Server
 import Servant.HTML.Blaze
 import Text.Blaze.Html (Html)
 import qualified Text.Blaze.Html5 as H
+import Text.Blaze.Html ( (!))
 import qualified Text.Blaze.Html5.Attributes as A
 
 import GitHub as GH
