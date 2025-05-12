@@ -43,14 +43,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 
 import GitHub as GH
 
-type API = Capture "owner" String :> Capture "reponame" String :> "the" :> CaptureAll "fullpath" String :> Get '[HTML] Html
-
-getBooks :: (MonadError ServerError m, MonadIO m, MonadDB m, MonadReader r m, HasConfiguration r) => m Html
-getBooks = return $ H.docTypeHtml $ do
-    H.head $ H.title "Books"
-    H.body $ do
-      H.h1 "Books"
-      H.p "This is a simple HTML page produced by a Blaze template."
+type API = Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html
 
 server ::
   ( MonadIO m,
@@ -62,7 +55,6 @@ server ::
   ServerT API m
 server = ximeraPageHandler
 
--- Handler for the new endpoint:
 ximeraPageHandler ::
   ( MonadIO m,
     MonadDB m,
