@@ -35,6 +35,7 @@ import qualified Data.Text as Text
 import qualified Database.Redis as R
 import Servant
 import Servant.Server
+import Servant.HTML.Blaze
 import Text.Blaze.Html (Html)
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
