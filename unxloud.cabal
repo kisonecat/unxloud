@@ -42,16 +42,19 @@ executable unxloud
                      , string-conversions
                      , bytestring
                      , resource-pool
+                     , either
                      , containers
                      , http-api-data
                      , http-types
                      , http-conduit
+                     , http-client
                      , lens
                      , monad-logger
                      , mtl
                      , servant
                      , servant-server
-                     , wai-logger 
+                     , wai-logger
+                     , network-uri
                      , dotenv
                      , stm
                      , hedis

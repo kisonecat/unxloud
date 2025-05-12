@@ -43,7 +43,7 @@ type API = "books" :> (Get '[JSON] Int)
 getBooks :: (MonadError ServerError m, MonadIO m, MonadDB m, MonadReader r m, HasConfiguration r) => m Int
 getBooks = do
   --r <- GH.getRepoMain "ximeraproject" "xloud"
-  r <- GH.getTree "https://api.github.com/repos/XimeraProject/xloud/git/trees/2bbab0a3512598c868db9502ec806c40d6345e03"
+  r <- GH.getPage "kisonecat" "samplePages" "seco2nd.html"
   liftIO $ print r
   return 17
 
