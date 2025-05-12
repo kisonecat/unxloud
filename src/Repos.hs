@@ -57,7 +57,17 @@ instance Accept JavaScript where
 instance MimeRender JavaScript BS.ByteString where
   mimeRender _ bs = LBS.fromStrict bs
 
+-- New content type for serving CSS files.
+data CSS
+
+instance Accept CSS where
+  contentType _ = "text/css"
+
+instance MimeRender CSS BS.ByteString where
+  mimeRender _ bs = LBS.fromStrict bs
+
 type API = (Capture "sha" SHA :> "bundle.js" :> Get '[JavaScript] BS.ByteString)
+       :<|> (Capture "sha" SHA :> "main.css" :> Get '[CSS] BS.ByteString)
        :<|> (Capture "owner" String :> Capture "reponame" String :> CaptureAll "fullpath" String :> Get '[HTML] Html)
 
 server ::
@@ -68,7 +78,7 @@ server ::
     MonadError ServerError m
   ) =>
   ServerT API m
-server = shaBundleHandler :<|> ximeraPageHandler
+server = shaBundleHandler :<|> cssHandler :<|> ximeraPageHandler
 
 ximeraPageHandler ::
   ( MonadIO m,
