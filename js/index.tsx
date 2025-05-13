@@ -28,7 +28,8 @@ import {
   propsModule,
   styleModule,
   eventListenersModule,
-  VNode
+  VNode,
+  toVNode
 } from "snabbdom";
 
 var patch = init([ // Init patch function with chosen modules
@@ -90,6 +91,14 @@ export function dispatch(message) {
   update( app.update(message, state) );
 }
 
-update( app.init() );
+addEventListener("DOMContentLoaded", (event) => {
+  const oldBodyVNode = toVNode(document.body);
+  document.body.innerHTML = '';
+  
+  update( app.init(oldBodyVNode) );
+})
+
+
+
 
 
